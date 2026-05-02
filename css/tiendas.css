@@ -1,0 +1,61 @@
+@import url('https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;700&display=swap');
+
+
+*{
+    font-family: 'Public Sans', sans-serif;
+}
+
+header{
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+}
+
+#logo{
+    position: absolute;
+    left: 20px;
+    width: 350px;
+}
+
+main{
+    margin-left: 20px;
+}
+
+table{
+    border-collapse: collapse;
+    border-style: solid;
+    border-color: black;
+    border-width: 2px;
+}
+
+
+table th{
+    border-style: solid;
+    border-color: black;
+    border-width: 2px;
+
+    color: white;
+    background-color: #4472c4;
+
+    padding: 5px 20px;
+}
+
+table td{
+    border-style: solid;
+    border-color: black;
+    border-width: 2px;
+}
+
+.check-participa{
+    text-align: center;
+    vertical-align: middle;
+}
+
+.check-participa input[type="checkbox"] {
+    accent-color: #000000;
+    cursor: pointer;
+    transform: scale(1.2);
+    vertical-align: middle;
+}

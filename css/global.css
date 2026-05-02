@@ -1,0 +1,69 @@
+@import url('https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&display=swap');
+
+:root {
+    /* Paleta de colores basada en tu diseño */
+    --primary-blue: #003366; /* Azul oscuro para cabeceras de tabla y botones */
+    --accent-blue: #4472c4;  /* Azul secundario */
+    --bg-main: #f4f7fb;      /* Color de fondo de la web */
+    --bg-white: #ffffff;     /* Fondo de las tarjetas */
+
+    --text-dark: #1e293b;
+    --text-muted: #64748b;
+    --border-color: #e2e8f0;
+
+    /* Colores de estado */
+    --status-green: #10b981;
+    --status-red: #ef4444;
+    --status-yellow: #f59e0b;
+}
+
+body {
+    font-family: 'Public Sans', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: var(--bg-main);
+    color: var(--text-dark);
+}
+
+/* Estilos de Tarjeta (Panel blanco con sombra) */
+.card {
+    background-color: var(--bg-white);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+/* Botones estándar */
+.btn-primary {
+    background-color: var(--primary-blue);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-primary:hover {
+    background-color: #002244;
+}
+
+.btn-outline {
+    background-color: transparent;
+    color: var(--primary-blue);
+    border: 1px solid var(--primary-blue);
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-outline:hover {
+    background-color: var(--bg-main);
+}
+
+.text-mutex {
+    color: var(--text-muted);
+}

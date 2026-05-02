@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asignación de Turno</title>
+    <link rel="stylesheet" href="../css/global.css" />
+    <link rel="stylesheet" href="../css/formularioTurno.css" />
+    <!-- Importar cliente de Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/components.js"></script>
+</head>
+<body class="formulario-turno-page">
+
+    <include-html src="./components/navbar.html"></include-html>
+
+    <div style="display: flex; flex-direction: row">
+        <div class="form-turno">
+            <div class="turno-info" id="header-info">
+                <!-- Se rellena con JS -->
+            </div>
+
+            <form id="turno-form">
+                <input type="hidden" id="turno_id" name="id">
+                <input type="hidden" id="tiendaCampanyaId" name="tiendaCampanyaId">
+                <input type="hidden" id="tipoTurnoId" name="tipoTurnoId">
+                <input type="hidden" id="lineal" name="lineal">
+
+                <div class="form-group">
+                    <label for="input_colaboradores">Colaborador:</label>
+                    <select id="input_colaboradores" name="idColaborador">
+                        <option value="0">Seleccione un colaborador...</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="input_num_voluntarios">Número de voluntarios:</label>
+                    <input id="input_num_voluntarios" type="number" name="numVoluntarios">
+                </div>
+
+                <div class="form-group-row">
+                    <div class="form-group">
+                        <label for="input_hora_inicio">Hora Inicio:</label>
+                        <input id="input_hora_inicio" type="time" name="horaInicio">
+                    </div>
+                    <div class="form-group">
+                        <label for="input_hora_fin">Hora Fin:</label>
+                        <input id="input_hora_fin" type="time" name="horaFin">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="input_observaciones">Observaciones:</label>
+                    <textarea id="input_observaciones" name="observaciones" rows="4"></textarea>
+                </div>
+
+                <button type="submit" class="btn-submit">Guardar Turno</button>
+            </form>
+        </div>
+        <div id="colaborador_container" style="padding: 40px; font-weight: bold;">
+            <!-- La información lateral del colaborador se inyectará aquí -->
+        </div>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const tiendaIdParam = urlParams.get('id');
+        const turnoIdParam = urlParams.get('turno');
+        const linealParam = urlParams.get('lineal');
+
+        const form = document.getElementById('turno-form');
+        const selectColaboradores = document.getElementById('input_colaboradores');
+        const colaboradorContainer = document.getElementById('colaborador_container');
+
+        async function initPage() {
+            try {
+                // 1. Cargar lista de colaboradores
+                const { data: colaboradores } = await supabaseClient.from('colaborador').select('id, nombre');
+                if (colaboradores) {
+                    colaboradores.forEach(c => {
+                        const opt = document.createElement('option');
+                        opt.value = c.id;
+                        opt.textContent = c.nombre;
+                        selectColaboradores.appendChild(opt);
+                    });
+                }
+
+                // 2. Buscar si ya existe la asignación de turno (Petición simple, sin JOINs problemáticos)
+                const { data: turnoExistente } = await supabaseClient
+                    .from('asignacion_turno')
+                    .select('*')
+                    .eq('id_tienda_campanya', tiendaIdParam)
+                    .eq('id_turno', turnoIdParam)
+                    .eq('lineal', linealParam).maybeSingle();
+
+                // 3. Obtener nombres de Tienda y Turno independientemente (100% a prueba de fallos)
+                const { data: tiendaData } = await supabaseClient
+                    .from('tienda_campanya')
+                    .select('tienda(nombre, domicilio)')
+                    .eq('id', tiendaIdParam).maybeSingle();
+                    
+                const { data: tipoTurnoData } = await supabaseClient
+                    .from('tipo_turno')
+                    .select('nombre')
+                    .eq('id', turnoIdParam).maybeSingle();
+
+                // Extraemos textos seguros
+                const nombreTienda = tiendaData?.tienda?.nombre || "Tienda no encontrada";
+                const domTienda = tiendaData?.tienda?.domicilio || "";
+                const nombreTurno = tipoTurnoData?.nombre || "Turno " + turnoIdParam;
+
+                renderHeaderInfo(nombreTienda, domTienda, nombreTurno, linealParam);
+
+                // 4. Rellenar formulario solo si el turno ya existía
+                if (turnoExistente) {
+                    document.getElementById('turno_id').value = turnoExistente.id;
+                    selectColaboradores.value = turnoExistente.id_colaborador || 0;
+                    document.getElementById('input_num_voluntarios').value = turnoExistente.num_voluntarios || '';
+                    document.getElementById('input_hora_inicio').value = turnoExistente.hora_inicio || '';
+                    document.getElementById('input_hora_fin').value = turnoExistente.hora_fin || '';
+                    document.getElementById('input_observaciones').value = turnoExistente.observaciones || '';
+                    
+                    fetchColaboradorData(turnoExistente.id_colaborador);
+                } else {
+                    fetchColaboradorData(0); // Turno nuevo = Sin colaborador por defecto
+                }
+
+                // Datos ocultos para enviar al guardar
+                document.getElementById('tiendaCampanyaId').value = tiendaIdParam;
+                document.getElementById('tipoTurnoId').value = turnoIdParam;
+                document.getElementById('lineal').value = linealParam;
+                
+            } catch (error) {
+                console.error("Error crítico cargando la página:", error);
+            }
+        }
+
+        function renderHeaderInfo(tienda, domicilio, turno, lineal) {
+            document.getElementById('header-info').innerHTML = `
+                <div class="turno-info-row">
+                    <span>${tienda} - <span class="text-mutex">${domicilio}</span></span>
+                    <span>${turno}</span>
+                </div>
+                <div class="turno-info-row">
+                    <span></span>
+                    <span>Lineal ${lineal}</span>
+                </div>
+            `;
+        }
+
+        async function fetchColaboradorData(idColaborador) {
+            if (!idColaborador || idColaborador == 0) {
+                colaboradorContainer.innerHTML = "No hay colaborador seleccionado";
+                return;
+            }
+            const { data } = await supabaseClient.from('colaborador').select('nombre').eq('id', idColaborador).single();
+            colaboradorContainer.innerHTML = data ? data.nombre : "No hay";
+        }
+
+        selectColaboradores.addEventListener("change", (e) => {
+            fetchColaboradorData(e.target.value);
+        });
+
+        // Interceptar el guardado y enviarlo a Supabase
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const payload = {
+                id_tienda_campanya: document.getElementById('tiendaCampanyaId').value,
+                id_turno: document.getElementById('tipoTurnoId').value,
+                lineal: document.getElementById('lineal').value,
+                id_colaborador: selectColaboradores.value,
+                num_voluntarios: document.getElementById('input_num_voluntarios').value || null,
+                hora_inicio: document.getElementById('input_hora_inicio').value || null,
+                hora_fin: document.getElementById('input_hora_fin').value || null,
+                observaciones: document.getElementById('input_observaciones').value || null
+            };
+
+            const turnoId = document.getElementById('turno_id').value;
+
+            try {
+                if (turnoId) {
+                    // Actualizar (Update)
+                    await supabaseClient.from('asignacion_turno').update(payload).eq('id', turnoId);
+                } else {
+                    // Crear (Insert)
+                    await supabaseClient.from('asignacion_turno').insert([payload]);
+                }
+                window.location.href = '/html/asignacion_turno.html'; // Redirige tras guardar
+            } catch (error) {
+                console.error("Error guardando el turno: ", error);
+            }
+        });
+
+        initPage();
+    </script>
+</body>
+</html>
