@@ -6,9 +6,6 @@
     <title>Asignación de Turno</title>
     <link rel="stylesheet" href="../css/global.css" />
     <link rel="stylesheet" href="../css/formularioTurno.css" />
-    <!-- Importar cliente de Supabase -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="../js/components.js"></script>
 </head>
 <body class="formulario-turno-page">
 
@@ -57,85 +54,140 @@
                 <button type="submit" class="btn-submit">Guardar Turno</button>
             </form>
         </div>
-        <div id="colaborador_container" style="padding: 40px; font-weight: bold;">
-            <!-- La información lateral del colaborador se inyectará aquí -->
+        <div id="colaborador_container" class="card panel-colaborador">
+            <div class="empty-colaborador-msg">
+                Seleccione un colaborador para ver su información
+            </div>
         </div>
     </div>
 
-    <script>
+   <script>
         const urlParams = new URLSearchParams(window.location.search);
-        const tiendaIdParam = urlParams.get('id');
-        const turnoIdParam = urlParams.get('turno');
-        const linealParam = urlParams.get('lineal');
+        const tiendaId = urlParams.get('id');
+        const turnoId = urlParams.get('turno');
+        const lineal = urlParams.get('lineal');
 
         const form = document.getElementById('turno-form');
         const selectColaboradores = document.getElementById('input_colaboradores');
         const colaboradorContainer = document.getElementById('colaborador_container');
 
+		// Lista de colaboradores en memoria para evitar múltiples llamadas a la API
+        let listaColaboradores = [];
+
         async function initPage() {
             try {
-                // 1. Cargar lista de colaboradores
-                const { data: colaboradores } = await supabaseClient.from('colaborador').select('id, nombre');
-                if (colaboradores) {
-                    colaboradores.forEach(c => {
+                // Consultamos la lista de colaboradores
+                const responseColaboradores = await fetch('https://proyecto-bancosol.onrender.com/api/colaboradores/');
+                
+                if (responseColaboradores.ok) {
+                    listaColaboradores = await responseColaboradores.json();
+                    
+                    listaColaboradores.forEach(c => {
                         const opt = document.createElement('option');
                         opt.value = c.id;
                         opt.textContent = c.nombre;
                         selectColaboradores.appendChild(opt);
                     });
+                } else {
+                    console.error("Error al cargar los colaboradores");
                 }
 
-                // 2. Buscar si ya existe la asignación de turno (Petición simple, sin JOINs problemáticos)
-                const { data: turnoExistente } = await supabaseClient
-                    .from('asignacion_turno')
-                    .select('*')
-                    .eq('id_tienda_campanya', tiendaIdParam)
-                    .eq('id_turno', turnoIdParam)
-                    .eq('lineal', linealParam).maybeSingle();
+                // Consultamos el turno, si existe
+                const responseTurno = await fetch(`https://proyecto-bancosol.onrender.com/api/asignacionTurnos/buscarTurno/${tiendaId}/${turnoId}/${lineal}`);
 
-                // 3. Obtener nombres de Tienda y Turno independientemente (100% a prueba de fallos)
-                const { data: tiendaData } = await supabaseClient
-                    .from('tienda_campanya')
-                    .select('tienda(nombre, domicilio)')
-                    .eq('id', tiendaIdParam).maybeSingle();
-                    
-                const { data: tipoTurnoData } = await supabaseClient
-                    .from('tipo_turno')
-                    .select('nombre')
-                    .eq('id', turnoIdParam).maybeSingle();
+                let turnoData = null;
+                if (responseTurno.ok) {
+                    const textData = await responseTurno.text();
+                    if (textData) turnoData = JSON.parse(textData);
+                } else {
+					console.error("Error al cargar el turno:", responseTurno.statusText);
+				}
 
-                // Extraemos textos seguros
+
+                // Consultamos los datos de la tienda
+                const responseTienda = await fetch(`https://proyecto-bancosol.onrender.com/api/tiendas/buscarTiendaCampanya/${tiendaId}`);
+                
+				if (!responseTienda.ok) {
+					console.error("Error al cargar la tienda:", responseTienda.statusText);
+				}
+
+				const tiendaData = await responseTienda.json();
+
+
+
+				// Consultamos el nombre del turno
+				const responseTipoTurno = await fetch(`https://proyecto-bancosol.onrender.com/api/tipoTurno/${turnoId}`);
+
+                if (!responseTipoTurno.ok) {
+					console.error("Error al cargar el tipo de turno:", responseTipoTurno.statusText);
+				}
+				const tipoTurnoData = await responseTipoTurno.json();
+
+
                 const nombreTienda = tiendaData?.tienda?.nombre || "Tienda no encontrada";
                 const domTienda = tiendaData?.tienda?.domicilio || "";
-                const nombreTurno = tipoTurnoData?.nombre || "Turno " + turnoIdParam;
+                const nombreTurno = tipoTurnoData?.nombre || "Turno " + turnoId;
 
-                renderHeaderInfo(nombreTienda, domTienda, nombreTurno, linealParam);
+                renderHeaderInfo(nombreTienda, domTienda, nombreTurno, lineal);
 
-                // 4. Rellenar formulario solo si el turno ya existía
-                if (turnoExistente) {
-                    document.getElementById('turno_id').value = turnoExistente.id;
-                    selectColaboradores.value = turnoExistente.id_colaborador || 0;
-                    document.getElementById('input_num_voluntarios').value = turnoExistente.num_voluntarios || '';
-                    document.getElementById('input_hora_inicio').value = turnoExistente.hora_inicio || '';
-                    document.getElementById('input_hora_fin').value = turnoExistente.hora_fin || '';
-                    document.getElementById('input_observaciones').value = turnoExistente.observaciones || '';
+                // Rellenamos el formulario si existía turno
+                if (turnoData) {
+                    document.getElementById('turno_id').value = turnoData.id;
+                    selectColaboradores.value = turnoData.colaborador.id || 0;
+                    document.getElementById('input_num_voluntarios').value = turnoData.numVoluntarios || '';
+                    document.getElementById('input_hora_inicio').value = turnoData.horaInicio || '';
+                    document.getElementById('input_hora_fin').value = turnoData.horaFin || '';
+                    document.getElementById('input_observaciones').value = turnoData.observaciones || '';
                     
-                    fetchColaboradorData(turnoExistente.id_colaborador);
+                    renderColaboradorInfo(turnoData.colaborador.id);
                 } else {
-                    fetchColaboradorData(0); // Turno nuevo = Sin colaborador por defecto
+                    renderColaboradorInfo(0);
                 }
 
                 // Datos ocultos para enviar al guardar
-                document.getElementById('tiendaCampanyaId').value = tiendaIdParam;
-                document.getElementById('tipoTurnoId').value = turnoIdParam;
-                document.getElementById('lineal').value = linealParam;
+                document.getElementById('tiendaCampanyaId').value = tiendaId;
+                document.getElementById('tipoTurnoId').value = turnoId;
+                document.getElementById('lineal').value = lineal;
                 
             } catch (error) {
                 console.error("Error crítico cargando la página:", error);
             }
         }
 
-        function renderHeaderInfo(tienda, domicilio, turno, lineal) {
+
+        selectColaboradores.addEventListener("change", (e) => {
+            renderColaboradorInfo(e.target.value);
+        });
+
+        // Guardamos el turno al hacer submit en el formulario
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const payload = {
+                idTurno: document.getElementById('turno_id').value,
+                idTiendaCampanya: document.getElementById('tiendaCampanyaId').value,
+                idTipoTurno: document.getElementById('tipoTurnoId').value,
+                lineal: document.getElementById('lineal').value,
+                idColaborador: selectColaboradores.value,
+                numVoluntarios: document.getElementById('input_num_voluntarios').value || null,
+                horaInicio: document.getElementById('input_hora_inicio').value || null,
+                horaFin: document.getElementById('input_hora_fin').value || null,
+                observaciones: document.getElementById('input_observaciones').value || null
+            };
+
+            try {
+                const response = await fetch('https://proyecto-bancosol.onrender.com/api/asignacionTurnos/guardar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                window.location.href = '/html/asignacion_turno.html';
+            } catch (error) {
+                console.error("Error guardando el turno: ", error);
+            }
+        });
+
+		function renderHeaderInfo(tienda, domicilio, turno, lineal) {
             document.getElementById('header-info').innerHTML = `
                 <div class="turno-info-row">
                     <span>${tienda} - <span class="text-mutex">${domicilio}</span></span>
@@ -148,50 +200,64 @@
             `;
         }
 
-        async function fetchColaboradorData(idColaborador) {
+        // Pintamos el panel lateral con la información del colaborador asignado al turno
+        function renderColaboradorInfo(idColaborador) {
             if (!idColaborador || idColaborador == 0) {
-                colaboradorContainer.innerHTML = "No hay colaborador seleccionado";
+                colaboradorContainer.innerHTML = "<div style='color: gray; font-style: italic; text-align: center; margin-top: 20px;'>No hay colaborador seleccionado</div>";
                 return;
             }
-            const { data } = await supabaseClient.from('colaborador').select('nombre').eq('id', idColaborador).single();
-            colaboradorContainer.innerHTML = data ? data.nombre : "No hay";
+
+            // Buscamos el colaborador en nuestro array en memoria
+            const col = listaColaboradores.find(c => c.id == idColaborador);
+            
+            if (!col) return;
+
+            let contactosHtml = '';
+            if (col.contactos && col.contactos.length > 0) {
+                contactosHtml = col.contactos.map(c => `
+                    <div class="info-card">
+                        <div class="info-header">
+                            <div class="info-main">
+                                <p class="lbl-capitan">${c.nombre}</p>
+                            </div>
+                            <div class="info-side">
+                                <div>TELÉFONO</div>
+                                <div>${c.telefono || "--"}</div>
+                            </div>
+                        </div>
+                        <div class="info-body">
+                            <p><strong>Email: </strong>${c.email || "--"}</p>
+                        </div>
+                    </div>
+                `).join('');
+            } else {
+                contactosHtml = `<p class="text-muted" style="font-size: 0.85rem;">No hay contactos registrados.</p>`;
+            }
+
+            colaboradorContainer.innerHTML = `
+                <div id="colaborador-localization">
+                    <p id="lbl-colaborador">${col.nombre}</p>
+                    <p id="lbl-domicilio">${col.domicilio || '--'}</p>
+                    <p class="text-muted">${col.codigo || '--'}, ${col.localidadSede ? col.localidadSede.nombre : '--'}</p>
+                    <p class="text-muted">Colabora en: ${col.colaboraEn ? col.colaboraEn.nombre : '--'}</p>
+                </div>
+                <div id="colaborador-schedule">
+                    <div id="contactosCard">
+                        ${contactosHtml}
+                    </div>
+                    <div id="colaborador-observaciones">
+                        <p class="section-title">Observaciones</p>
+                        <div class="info-card">
+                            <div class="info-body">
+                                <p>${col.observaciones ? col.observaciones : "Sin observaciones"}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
         }
 
-        selectColaboradores.addEventListener("change", (e) => {
-            fetchColaboradorData(e.target.value);
-        });
-
-        // Interceptar el guardado y enviarlo a Supabase
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const payload = {
-                id_tienda_campanya: document.getElementById('tiendaCampanyaId').value,
-                id_turno: document.getElementById('tipoTurnoId').value,
-                lineal: document.getElementById('lineal').value,
-                id_colaborador: selectColaboradores.value,
-                num_voluntarios: document.getElementById('input_num_voluntarios').value || null,
-                hora_inicio: document.getElementById('input_hora_inicio').value || null,
-                hora_fin: document.getElementById('input_hora_fin').value || null,
-                observaciones: document.getElementById('input_observaciones').value || null
-            };
-
-            const turnoId = document.getElementById('turno_id').value;
-
-            try {
-                if (turnoId) {
-                    // Actualizar (Update)
-                    await supabaseClient.from('asignacion_turno').update(payload).eq('id', turnoId);
-                } else {
-                    // Crear (Insert)
-                    await supabaseClient.from('asignacion_turno').insert([payload]);
-                }
-                window.location.href = '/html/asignacion_turno.html'; // Redirige tras guardar
-            } catch (error) {
-                console.error("Error guardando el turno: ", error);
-            }
-        });
-
+        // Iniciamos la función
         initPage();
     </script>
 </body>

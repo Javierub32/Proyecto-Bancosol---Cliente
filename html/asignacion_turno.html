@@ -148,8 +148,8 @@
                     <div id="volunteer-info">
                         <div id="volunteer-name">
                             <div><p id="lbl-capitan">${turno.colaborador?.nombre}</p></div>
-                            <div class="volunteer-date"><div>COMIENZO</div><div>${turno.horaInicio}</div></div>
-                            <div class="volunteer-date"><div>FIN</div><div>${turno.horaFin}</div></div>
+                            <div class="volunteer-date"><div>COMIENZO</div><div>${turno.horaInicio ? turno.horaInicio.substring(0, 5) : '--:--'}</div></div>
+                            <div class="volunteer-date"><div>FIN</div><div>${turno.horaFin ? turno.horaFin.substring(0, 5) : '--:--'}</div></div>
                         </div>
                         <div id="volunteer-observations"><p>${turno.observaciones || ''}</p></div>
                     </div>`;
