@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Colaboradores | Bancosol</title>
+	<link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/colaboradores.css">
+	<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/components.js" defer></script>
+	<script src="../js/colaboradores.js" defer></script>
+</head>
+<body>
+
+    <include-html src="./components/navbar.html"></include-html>
+
+    <main>
+        <div class="page-wrapper">
+            <div class="left-column">
+                <div class="table-container card">
+                    <table class="modernTable">
+                        <thead>
+                            <tr>
+                                <th>Colaborador</th>
+                                <th>Domicilio</th>
+                                <th>Localidad</th>
+                                <th>Colabora en</th>
+                                <th>Coordinador</th>
+                                <th>Contacto Principal</th>
+                                <th>Observaciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-body">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="right-column">
+                <div class="side-panel-unified">
+                    <div id="info-container" class="card side-panel">
+                    </div>
+
+                    <div class="buttons-wrapper">
+                        <div class="buttons-section">
+                            <div class="flex-buttons">
+                                <button class="btn-primary" id="btn-anadir">Añadir colaborador</button>
+                                <button class="btn-outline" id="btn-modificar">Modificar colaborador</button>
+                                <button class="btn-outline" id="btn-eliminar">Eliminar colaborador</button>
+                                <button class="btn-outline" id="btn-asignar">Asignar a tienda</button>
+                            </div>
+                            <div class="flex-action-buttons">
+                                <button id="create-button" class="btn-action">Guardar</button>
+                                <button id="cancel-button" class="btn-action cancel">Cancelar</button>
+                                <button id="export-button" class="btn-action">Exportar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+</body>
+</html>
