@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Campañas | Bancosol</title>
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/campanyas.css">
+    <link rel="stylesheet" href="../css/cadenas.css">
+    <script src="../js/components.js" defer></script>
+    <script src="../js/campanyas.js" defer></script>
+</head>
+<body>
+    <include-html src="./components/navbar.html"></include-html>
+    <main class="main-page">
+        <section class="campanya-list-wrapper">
+            <div class="campanya-header">
+                <div>
+                    <h1>Gestión de Campañas</h1>
+                    <p>Consulta las campañas creadas y genera nuevas campañas.</p>
+                </div>
+                <!-- Botones normales -->
+                <div class="campanya-list-actions" id="action-buttons-container">
+                    <a class="btn-outline" href="/html/cadenas.html">Gestionar Cadenas</a>
+                    <button class="btn-outline btn-outline-danger" style="color: #ef4444; border-color: #ef4444;" id="btn-eliminar-modo">Eliminar campañas</button>
+                    <a href="/html/formulario_campanya.html" class="btn-primary">
+                        <span class="cadena-create-icon">+</span>
+                        <span> Nueva Campaña</span>
+                    </a>
+                </div>
+                <!-- Botones de modo eliminación -->
+                <div class="campanya-list-actions" id="delete-buttons-container" style="display: none;">
+                    <button class="btn-outline btn-outline-danger" style="color: #ef4444; border-color: #ef4444; font-size: 17px;" id="btn-confirm-delete">Confirmar selección y borrar</button>
+                    <button class="btn-outline" id="btn-cancel-delete">Cancelar selección</button>
+                </div>
+            </div>
+
+            <div class="card campanya-table-card">
+                <table class="modernTable">
+                    <thead>
+                        <tr>
+                            <th class="col-checkbox" style="display: none; width: 60px;">X</th>
+                            <th>Tipo de campaña</th>
+                            <th>Nombre</th>
+                            <th>Fecha inicio</th>
+                            <th>Fecha fin</th>
+                            <th>Cadenas participantes</th>
+                            <th style="width: 120px;">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body-campanyas">
+                        <!-- Llenado dinámico -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Cadenas | Bancosol</title>
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/cadenas.css">
+    <script src="../js/components.js" defer></script>
+    <script src="../js/cadenas.js" defer></script>
+</head>
+<body>
+    <include-html src="./components/navbar.html"></include-html>
+    <main class="main-page">
+        <section class="cadena-list-wrapper">
+            <div class="cadena-list-header">
+                <div class="cadena-list-title">
+                    <h2>Gestión de Cadenas</h2>
+                    <p>Modifica, añade u elimina datos de cadenas registradas en el sistema.</p>
+                </div>
+                <div class="cadena-header-actions" id="action-buttons-container">
+                    <button class="btn-outline btn-outline-danger" style="color: #ef4444; border-color: #ef4444;" id="btn-eliminar-modo">Eliminar cadenas</button>
+                    <a class="cadena-create-btn" href="/html/formulario_cadena.html">
+                        <span class="cadena-create-icon">+</span>
+                        <span>Nueva cadena</span>
+                    </a>
+                </div>
+                <div class="cadena-header-actions" id="delete-buttons-container" style="display: none;">
+                    <button class="btn-outline btn-outline-danger" style="color: #ef4444; border-color: #ef4444; font-size: 17px" id="btn-confirm-delete">Confirmar y eliminar</button>
+                    <button class="btn-outline" id="btn-cancel-delete">Cancelar selección</button>
+                </div>
+            </div>
+
+            <div class="card cadena-table-card">
+                <table class="modernTable cadena-table">
+                    <thead>
+                        <tr>
+                            <th class="col-checkbox" style="display: none; width: 60px;">X</th>
+                            <th>Nombre</th>
+                            <th>Código</th>
+                            <th style="width: 120px;">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body-cadenas">
+                        <!-- Llenado dinámico -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

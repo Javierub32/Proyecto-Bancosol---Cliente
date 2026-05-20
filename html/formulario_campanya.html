@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario de Campaña | Bancosol</title>
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/campanyas.css">
+    <script src="../js/components.js" defer></script>
+    <script src="../js/formulario_campanya.js" defer></script>
+</head>
+<body>
+    <include-html src="./components/navbar.html"></include-html>
+    <main class="campanya-page">
+        <section class="campanya-form-wrapper">
+            <div class="campanya-header">
+                <div>
+                    <h2 id="form-title">Datos de la nueva campaña</h2>
+                    <p>Completa los datos básicos y selecciona las cadenas participantes.</p>
+                </div>
+            </div>
+            <div id="formularioCampanya" class="card campanya-form-card">
+                <form id="campanyaform" class="campanya-form">
+                    <input type="hidden" id="campanya_id" name="id">
+                    
+                    <section class="form-section">
+                        <h3 class="form-section-title">Información principal</h3>
+                        <div class="form-group">
+                            <label for="nombreCampanya">Nombre de la Campaña</label>
+                            <input id="nombreCampanya" type="text" name="nombre" required placeholder="Nueva campaña">
+                        </div>
+                    </section>
+                    
+                    <section class="form-section">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="fechaInicio">Fecha inicio</label>
+                                <input id="fechaInicio" type="date" name="fechaInicio" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="fechaFin">Fecha fin</label>
+                                <input id="fechaFin" type="date" name="fechaFin" required>
+                            </div>
+                        </div>
+                    </section>
+                    
+                    <section class="form-section">
+                        <h3 class="form-section-title">Tipo de Campaña</h3>
+                        <div class="form-group">
+                            <select id="tipoCampanya" name="idTipo" class="campanya-select" required>
+                                <option value="">Selecciona un tipo</option>
+                                <!-- Opciones cargadas por JS -->
+                            </select>
+                        </div>
+                    </section>
+                    
+                    <section class="form-section">
+                        <h3 class="form-section-title">Cadenas participantes</h3>
+                        <div class="info-box">
+                            Selecciona las cadenas que participarán en esta campaña.
+                        </div>
+                        <div class="checkbox-grid" id="cadenas-container">
+                            <!-- Checkboxes cargados por JS -->
+                        </div>
+                    </section>
+                    
+                    <section class="form-actions">
+                        <a href="/html/campanyas.html" class="btn-outline">Cancelar</a>
+                        <button type="submit" class="btn-primary" style="font-size: 15px;">Guardar</button>
+                    </section>
+                </form>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

@@ -147,4 +147,6 @@ const closeSidePanel = () => {
     }, 300);
 };
 
-loadColaboradores();
+document.addEventListener("DOMContentLoaded", () => {
+    loadColaboradores();
+});

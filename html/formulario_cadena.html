@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edición de Cadena | Bancosol</title>
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/cadenas.css">
+    <script src="../js/components.js" defer></script>
+    <script src="../js/formulario_cadena.js" defer></script>
+</head>
+<body>
+    <include-html src="./components/navbar.html"></include-html>
+    <main class="main-page">
+        <section class="cadena-form-wrapper">
+            <div class="cadena-form-header">
+                <div>
+                    <h2 id="form-title">Datos de la nueva cadena</h2>
+                    <p>Rellenar la información de la cadena.</p>
+                </div>
+            </div>
+            
+            <div id="formularioCadena" class="card cadena-form-card">
+                <form id="cadenaform" class="cadena-form">
+                    <input type="hidden" id="cadena_id" name="id">
+                    
+                    <section class="cadena-form-section">
+                        <div class="cadena-form-row">
+                            <div class="cadena-form-group">
+                                <label for="nombreCadena">Nombre de la cadena</label>
+                                <input id="nombreCadena" type="text" name="nombre" required placeholder="Nueva cadena de supermercados">
+                            </div>
+                            <div class="cadena-form-group">
+                                <label for="codigoCadena">Código de la cadena</label>
+                                <input id="codigoCadena" type="text" name="codigo" required placeholder="P.ej. MERC">
+                            </div>
+                        </div>
+                    </section>
+                    
+                    <section class="cadena-form-actions">
+                        <a href="/html/cadenas.html" class="btn-outline">Cancelar</a>
+                        <button type="submit" class="btn-primary">Guardar</button>
+                    </section>
+                </form>
+            </div>
+        </section>
+    </main>
+</body>
+</html>
