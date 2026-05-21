@@ -11,6 +11,7 @@ let listaColaboradores = [];
 
 async function initPage() {
   try {
+	// Pedimos la lista de colaboradores
     const responseColaboradores = await fetch(
       "https://proyecto-bancosol.onrender.com/api/colaboradores/",
     );
@@ -28,6 +29,7 @@ async function initPage() {
       console.error("Error al cargar los colaboradores");
     }
 
+	// Pedimos los datos del turno
     const responseTurno = await fetch(
       `https://proyecto-bancosol.onrender.com/api/asignacionTurnos/buscarTurno/${tiendaId}/${turnoId}/${lineal}`,
     );
@@ -40,6 +42,7 @@ async function initPage() {
       console.error("Error al cargar el turno:", responseTurno.statusText);
     }
 
+	// Pedimos los datos de la tienda
     const responseTienda = await fetch(
       `https://proyecto-bancosol.onrender.com/api/tiendas/buscarTiendaCampanya/${tiendaId}`,
     );
@@ -50,6 +53,8 @@ async function initPage() {
 
     const tiendaData = await responseTienda.json();
 
+
+	// Pedimos los datos del tipo de turno
     const responseTipoTurno = await fetch(
       `https://proyecto-bancosol.onrender.com/api/tipoTurno/${turnoId}`,
     );
@@ -66,6 +71,7 @@ async function initPage() {
     const domTienda = tiendaData?.tienda?.domicilio || "";
     const nombreTurno = tipoTurnoData?.nombre || "Turno " + turnoId;
 
+	// Renderizamos el header con la info de tienda y turno
     renderHeaderInfo(nombreTienda, domTienda, nombreTurno, lineal);
 
     if (turnoData) {
