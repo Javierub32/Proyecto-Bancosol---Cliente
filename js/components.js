@@ -16,11 +16,16 @@ class IncludeHTML extends HTMLElement {
             const link = item.querySelector(".nav-link");
             if (link) {
               const href = link.getAttribute("href");
-              if (
-                currentPath === href ||
-                (currentPath.includes("/html/formulario_turno.html") &&
-                  href.includes("/html/asignacion_turno.html"))
-              ) {
+              
+              const isTurnosActive = currentPath.includes("/html/formulario_turno.html") && 
+                                     href.includes("/html/asignacion_turno.html");
+                                     
+              const isCampanyasActive = (currentPath.includes("/html/cadenas.html") || 
+                                         currentPath.includes("/html/formulario_cadena.html") || 
+                                         currentPath.includes("/html/formulario_campanya.html")) && 
+                                        href.includes("/html/campanyas.html");
+
+              if (currentPath === href || isTurnosActive || isCampanyasActive) {
                 item.classList.add("active");
               }
             }
