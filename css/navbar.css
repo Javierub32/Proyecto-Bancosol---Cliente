@@ -19,12 +19,6 @@
   width: auto;
 }
 
-.user-section {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-
 .icon-btn {
   background: none;
   border: none;
@@ -39,20 +33,6 @@
 .icon-btn:hover {
   background-color: #f1f5f9;
   color: #1e293b;
-}
-
-.user-avatar {
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  background-color: #203c5e;
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 600;
-  font-size: 1.1rem;
-  border: 2px solid #e2e8f0;
 }
 
 .bottom-navbar {
@@ -104,11 +84,6 @@
   font-weight: 600;
   border-bottom-color: #4472c4;
   background-color: white;
-}
-
-.logout-section {
-  display: flex;
-  align-items: center;
 }
 
 .logout-link {
