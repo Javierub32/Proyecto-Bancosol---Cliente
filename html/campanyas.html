@@ -19,7 +19,6 @@
                     <h1>Gestión de Campañas</h1>
                     <p>Consulta las campañas creadas y genera nuevas campañas.</p>
                 </div>
-                <!-- Botones normales -->
                 <div class="campanya-list-actions" id="action-buttons-container">
                     <a class="btn-outline" href="/html/cadenas.html">Gestionar Cadenas</a>
                     <button class="btn-outline btn-outline-danger" style="color: #ef4444; border-color: #ef4444;" id="btn-eliminar-modo">Eliminar campañas</button>
@@ -28,7 +27,6 @@
                         <span> Nueva Campaña</span>
                     </a>
                 </div>
-                <!-- Botones de modo eliminación -->
                 <div class="campanya-list-actions" id="delete-buttons-container" style="display: none;">
                     <button class="btn-outline btn-outline-danger" style="color: #ef4444; border-color: #ef4444; font-size: 17px;" id="btn-confirm-delete">Confirmar selección y borrar</button>
                     <button class="btn-outline" id="btn-cancel-delete">Cancelar selección</button>
@@ -39,17 +37,15 @@
                 <table class="modernTable">
                     <thead>
                         <tr>
-                            <th class="col-checkbox" style="display: none; width: 60px;">X</th>
+                            <th></th>
                             <th>Tipo de campaña</th>
                             <th>Nombre</th>
                             <th>Fecha inicio</th>
                             <th>Fecha fin</th>
                             <th>Cadenas participantes</th>
-                            <th style="width: 120px;">Acciones</th>
                         </tr>
                     </thead>
                     <tbody id="table-body-campanyas">
-                        <!-- Llenado dinámico -->
                     </tbody>
                 </table>
             </div>

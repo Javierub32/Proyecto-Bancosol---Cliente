@@ -27,19 +27,19 @@ function renderTable() {
         const chips = camp.cadenasParticipantes?.map(c => `<span class="cadena-chip">${c.nombre}</span>`).join('') || "Sin cadenas participantes";
         
         tr.innerHTML = `
-            <td class="col-checkbox" style="${isDeleteMode ? '' : 'display:none;'}">
-                <input type="checkbox" class="campanya-delete-checkbox" value="${camp.id}">
+            <td>
+                <div class="campanya-row-actions">
+                    <input type="checkbox" class="campanya-delete-checkbox" value="${camp.id}" style="${isDeleteMode ? '' : 'display:none;'}">
+                    <a class="edit-campanya-btn" href="/html/formulario_campanya.html?id=${camp.id}">
+                        <span class="edit-campanya-icon">✎</span> Editar
+                    </a>
+                </div>
             </td>
             <td>${camp.tipoCampanya?.nombre || '--'}</td>
             <td>${camp.nombre}</td>
             <td>${camp.fechaInicio}</td>
             <td>${camp.fechaFin}</td>
             <td>${chips}</td>
-            <td>
-                <a class="edit-campanya-btn" href="/html/formulario_campanya.html?id=${camp.id}" style="${isDeleteMode ? 'display:none;' : ''}">
-                    <span class="edit-campanya-icon">✎</span> Editar
-                </a>
-            </td>
         `;
 
         const check = tr.querySelector('.campanya-delete-checkbox');
@@ -54,10 +54,6 @@ function renderTable() {
         }
 
         tableBody.appendChild(tr);
-    });
-
-    document.querySelectorAll('.col-checkbox').forEach(el => {
-        el.style.display = isDeleteMode ? '' : 'none';
     });
 }
 

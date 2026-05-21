@@ -1,14 +1,12 @@
-/* Layout Principal (Animado) */
 .page-wrapper {
 	display: flex;
-	/* Quitamos el gap de aquí para que no deje un espacio vacío cuando el panel esté oculto */
 	padding: 25px;
 	height: calc(100vh - 80px);
 	box-sizing: border-box;
 }
 
 .left-column {
-	flex: 1; /* Ocupará todo el espacio disponible automáticamente */
+	flex: 1;
 	display: flex;
 	flex-direction: column;
 	min-width: 0;
@@ -18,18 +16,15 @@
 	width: 0;
 	opacity: 0;
 	overflow: hidden;
-	/* Esta es la magia: una transición de 0.3 segundos muy fluida */
 	transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Esta clase se la pondremos con JavaScript cuando queramos abrirlo */
 .right-column.open {
 	width: 400px;
-	margin-left: 25px; /* Separación con la tabla */
+	margin-left: 25px;
 	opacity: 1;
 }
 
-/* Encabezado sobre la tabla */
 .header-actions {
 	display: flex;
 	justify-content: space-between;
@@ -43,12 +38,9 @@
 	color: var(--text-dark);
 }
 
-/* ============================
-   ESTILOS DE LA TABLA
-   ============================ */
 .table-container {
-	overflow-y: auto; /* Scroll interno para la tabla */
-	padding: 0; /* Sin padding para que la cabecera llegue al borde */
+	overflow-y: auto;
+	padding: 0;
 }
 
 table {
@@ -85,7 +77,6 @@ tbody tr:hover {
 	background-color: var(--bg-main);
 }
 
-/* Estilo para la fila seleccionada */
 tbody tr.selected {
 	background-color: #f0f7ff;
 	border-left: 4px solid var(--primary-blue);
@@ -105,7 +96,7 @@ tbody tr.selected {
 }
 
 .side-panel {
-	width: 400px; /* Ancho fijo para que su contenido interno no se aplaste durante la animación */
+	width: 400px;
 	height: 100%;
 	overflow-y: auto;
 	padding: 25px;
@@ -120,7 +111,6 @@ tbody tr.selected {
 	gap: 20px;
 }
 
-/* Título de la tienda en el panel derecho */
 #lbl-tienda {
 	font-size: 1.3rem;
 	font-weight: 600;
@@ -134,7 +124,6 @@ tbody tr.selected {
 	margin: 0;
 }
 
-/* Selector de horarios (Radio buttons) */
 #volunteer-schedule, #volunteer-lineal {
 	display: grid;
 	grid-template-columns: 1fr 1fr;
@@ -153,7 +142,6 @@ tbody tr.selected {
 	cursor: pointer;
 }
 
-/* Info del capitán y horas */
 #volunteer-info {
 	border: 1px solid var(--border-color);
 	border-radius: 8px;
@@ -180,7 +168,6 @@ tbody tr.selected {
 	font-size: 0.85rem;
 }
 
-/* Texto encima de las horas */
 .volunteer-date div:first-child {
 	color: var(--text-muted);
 	font-size: 0.75rem;
@@ -193,9 +180,8 @@ tbody tr.selected {
 	color: var(--text-muted);
 }
 
-/* Botones inferiores */
 #button-container {
-	margin-top: auto; /* Empuja los botones al fondo del panel */
+	margin-top: auto;
 	display: flex;
 	gap: 10px;
 	padding-top: 20px;

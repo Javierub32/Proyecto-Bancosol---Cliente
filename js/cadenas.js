@@ -26,16 +26,16 @@ function renderTable() {
         const tr = document.createElement('tr');
         
         tr.innerHTML = `
-            <td class="col-checkbox" style="${isDeleteMode ? '' : 'display:none;'}">
-                <input type="checkbox" class="cadena-delete-checkbox" value="${cad.id}">
+            <td>
+                <div class="cadena-row-actions"> 
+                    <input type="checkbox" class="cadena-delete-checkbox" value="${cad.id}" style="${isDeleteMode ? '' : 'display:none;'}">
+                    <a class="cadena-edit-btn" href="/html/formulario_cadena.html?id=${cad.id}">
+                        <span class="cadena-edit-icon">✎</span> Editar
+                    </a>
+                </div>
             </td>
             <td>${cad.nombre}</td>
             <td>${cad.codigo}</td>
-            <td>
-                <a class="cadena-edit-btn" href="/html/formulario_cadena.html?id=${cad.id}" style="${isDeleteMode ? 'display:none;' : ''}">
-                    <span class="cadena-edit-icon">✎</span> Editar
-                </a>
-            </td>
         `;
 
         const check = tr.querySelector('.cadena-delete-checkbox');
